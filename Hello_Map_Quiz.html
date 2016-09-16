@@ -25,16 +25,25 @@
            zoom: 8
         });
 
-       <!-- use MArker to identify a specipic location -->
+       // use MArker to identify a specipic location in a tooltip
        var marker = new google.maps.Marker({
           position: initLatLng,
           map: map,
           title: 'Hello World'
         });
+
+       // use InfoWindow TO display content in a popup window above the given location
+       var infowindow = new google.maps.InfoWindow({
+            content: "This is a window to dislay contents (usually text or Images)."
+       });
+       // attach the infowindow to an event to display it
+       marker.addListener('click', function(){
+        infowindow.open(map,marker);
+       });
      }
    </script>
    <!-- Load the JS API ASYNCHRONOUSLY below.-->
-   <script async defer src="https://maps.googleapis.com/maps/api/js?key=xxxx&callback=initMap"
+   <script async defer src="https://maps.googleapis.com/maps/api/js?key=xxx&callback=initMap"
    type="text/javascript" ></script>
    <script>
    </script>
