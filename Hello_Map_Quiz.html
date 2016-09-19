@@ -19,31 +19,73 @@
      function initMap() {
        //  use a constructor to create a new map JS object. The coordinates
        // are, 40.7413549, -73.99802439999996 or your own!
-        var initLatLng = {lat: -34.397, lng: 150.644};
+        var initLatLng = {lat: 40.7413549, lng: -73.9980244};
         map = new google.maps.Map(document.getElementById('map'), {
            center: initLatLng,
-           zoom: 8
+           zoom: 13
         });
 
-       // use MArker to identify a specipic location in a tooltip
-       var marker = new google.maps.Marker({
-          position: initLatLng,
+       // These are real estate listings to be shown to the user.
+       // Normally these are stored in the database instead.
+       var locations = [
+        {title:'Park Ave Penthouse', location: {lat: 40.7713024, lng: -73.9632393}},
+        {title:'Chelsea Loft', location: {lat: 40.7444883, lng: -73.9949465}},
+        {title:'Union Square OPen Floor Plan', location: {lat: 40.7347062, lng: -73.9805759}},
+        {title:'East Village Hip Studio', location: {lat: 40.7281777, lng: -73.984377}},
+        {title:'Trobeca Bachelopr Pad', location: {lat: 40.7195264, lng: -74.0089934}},
+        {title:'Chinatown Homely Space', location: {lat: 40.7180628, lng: -73.9961237}}
+
+       ];
+        var markers = new Array();
+       var largeInfoWindow = new google.maps.InfoWindow();
+       // use the location array to create an array of markers on initialize
+       for (var i=0; i<locations.length; i++){
+          //get title and position from the location array
+          var mytitle = locations[i].title;
+          var myposition = locations[i].location;
+
+          //create a marker per location
+          // use MArker to identify a specipic location in a tooltip
+          var marker = new google.maps.Marker({
           map: map,
-          title: 'Hello World'
+          position: myposition,
+          title: mytitle,
+          animation: google.maps.Animation.DROP,
+          id: i
         });
+          // push maker in an array of markers
+          markers.push(marker);
+          // create an onClick event for each of the marker. This event will open up an infoWindow for this marker
+          marker.addListener('click', function(){
+            populateInfoWindow(this, largeInfoWindow);
+          });
+
+       };
+
+         // This function populates the infoWindow when the marker is clicked
+         // There is only one infoWindow that is opened at a marker that is clicked and
+         // populated based on the marker's position
+         function populateInfoWindow(marker, infowindow){
+          //check to make sure that the infoWindow is not already open on it's marker
+          if (infowindow.marker != marker){
+            infowindow.marker = marker;
+            infowindow.setContent('<div>' + marker.title + '</div>');
+            infowindow.open(map,marker);
+            // Make sure that the marker property is cleared before tehe
+          };
+         };
+
 
        // use InfoWindow TO display content in a popup window above the given location
-       var infowindow = new google.maps.InfoWindow({
-            content: "This is a window to dislay contents (usually text or Images)."
-       });
+    //   var infowindow = new google.maps.InfoWindow({
+     //       content: "This is a window to dislay contents (usually text or Images)."
+     //  });
        // attach the infowindow to an event to display it
-       marker.addListener('click', function(){
-        infowindow.open(map,marker);
-       });
+    //
      }
    </script>
    <!-- Load the JS API ASYNCHRONOUSLY below.-->
-   <script async defer src="https://maps.googleapis.com/maps/api/js?key=xxx&callback=initMap"
+   <script async defer src="https://maps.googleapis.com/maps/api/js?key=xxxx&callback=initMap"
    type="text/javascript" ></script>
    <script>
    </script>
