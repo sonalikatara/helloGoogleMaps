@@ -36,8 +36,10 @@
         {title:'Chinatown Homely Space', location: {lat: 40.7180628, lng: -73.9961237}}
 
        ];
-        var markers = new Array();
+       var markers = new Array();
        var largeInfoWindow = new google.maps.InfoWindow();
+       // create a latLng bounds instance to adjust the boundaries of the map to fit all the locations on map in case they don't fit our initial zoom
+       var bounds = new google.maps.LatLngBounds();
        // use the location array to create an array of markers on initialize
        for (var i=0; i<locations.length; i++){
           //get title and position from the location array
@@ -55,13 +57,16 @@
         });
           // push maker in an array of markers
           markers.push(marker);
+          // extend the bounderies of the map for each marker
+          bounds.extend(marker.position);
           // create an onClick event for each of the marker. This event will open up an infoWindow for this marker
           marker.addListener('click', function(){
             populateInfoWindow(this, largeInfoWindow);
           });
 
        };
-
+        // ask the map to fit the bounds
+        map.fitBounds(bounds);
          // This function populates the infoWindow when the marker is clicked
          // There is only one infoWindow that is opened at a marker that is clicked and
          // populated based on the marker's position
@@ -74,18 +79,10 @@
             // Make sure that the marker property is cleared before tehe
           };
          };
-
-
-       // use InfoWindow TO display content in a popup window above the given location
-    //   var infowindow = new google.maps.InfoWindow({
-     //       content: "This is a window to dislay contents (usually text or Images)."
-     //  });
-       // attach the infowindow to an event to display it
-    //
      }
    </script>
    <!-- Load the JS API ASYNCHRONOUSLY below.-->
-   <script async defer src="https://maps.googleapis.com/maps/api/js?key=xxxx&callback=initMap"
+   <script async defer src="https://maps.googleapis.com/maps/api/js?key=XXX&callback=initMap"
    type="text/javascript" ></script>
    <script>
    </script>
