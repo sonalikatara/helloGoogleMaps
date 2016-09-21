@@ -5,16 +5,36 @@
  <!-- styles put here, but you can include a CSS file and reference it instead! -->
    <style type="text/css">
      html, body { height: 100%; margin: 0; padding: 0; }
+
+     .container {
+      height: 100%;
+      position: relative;
+     }
+
      #map { height: 100%; }
+      #hide-listings,
+      #show-listings {
+        width: 48%;
+      }
    </style>
 
  </head>
  <body>
+   <div class="container">
+   <div>
+     <input type="button" id="show-Listings" value= "Show Listings" />
+     <input type="button" id="hide-Listings" value= "Hide Listings" />
+   </div>
    <!-- 1: Create a place to put the map in the HTML-->
    <div id="map"></div>
+   </div>
    <script type="text/javascript">
      //  Create a map variable
-        var map;
+     var map;
+
+     // Create a new blank array of all the listing marlers
+     var markers = [];
+
      //  function to initialize the map
      function initMap() {
        //  use a constructor to create a new map JS object. The coordinates
@@ -36,10 +56,9 @@
         {title:'Chinatown Homely Space', location: {lat: 40.7180628, lng: -73.9961237}}
 
        ];
-       var markers = new Array();
+
        var largeInfoWindow = new google.maps.InfoWindow();
-       // create a latLng bounds instance to adjust the boundaries of the map to fit all the locations on map in case they don't fit our initial zoom
-       var bounds = new google.maps.LatLngBounds();
+
        // use the location array to create an array of markers on initialize
        for (var i=0; i<locations.length; i++){
           //get title and position from the location array
@@ -49,7 +68,7 @@
           //create a marker per location
           // use MArker to identify a specipic location in a tooltip
           var marker = new google.maps.Marker({
-          map: map,
+          //map: map, // removed map as we don't want to display the markers on page load
           position: myposition,
           title: mytitle,
           animation: google.maps.Animation.DROP,
@@ -57,17 +76,19 @@
         });
           // push maker in an array of markers
           markers.push(marker);
-          // extend the bounderies of the map for each marker
-          bounds.extend(marker.position);
+
           // create an onClick event for each of the marker. This event will open up an infoWindow for this marker
           marker.addListener('click', function(){
             populateInfoWindow(this, largeInfoWindow);
           });
 
        };
-        // ask the map to fit the bounds
-        map.fitBounds(bounds);
-         // This function populates the infoWindow when the marker is clicked
+
+       document.getElementById('show-Listings').addEventListener('click', showListings);
+       document.getElementById('hide-Listings').addEventListener('click', hideListings);
+      };
+
+      // This function populates the infoWindow when the marker is clicked
          // There is only one infoWindow that is opened at a marker that is clicked and
          // populated based on the marker's position
          function populateInfoWindow(marker, infowindow){
@@ -78,11 +99,34 @@
             infowindow.open(map,marker);
             // Make sure that the marker property is cleared before tehe
           };
-         };
-     }
+        }
+
+       function showListings(){
+            // create a latLng bounds instance to adjust the boundaries of the map to fit all the locations on map in case they don't fit our initial zoom
+            var bounds = new google.maps.LatLngBounds();
+
+            for (var i=0; i<markers.length; i++){
+              markers[i].setMap(map);
+              bounds.extend(markers[i].position)
+            }
+            // ask the map to fit the bounds
+            map.fitBounds(bounds);
+       }
+
+       function hideListings(){
+            for (var i = 0; i < markers.length; i++) {
+          markers[i].setMap(null);
+        }
+       }
+
+
+
+
+
    </script>
+
    <!-- Load the JS API ASYNCHRONOUSLY below.-->
-   <script async defer src="https://maps.googleapis.com/maps/api/js?key=XXX&callback=initMap"
+   <script async defer src="https://maps.googleapis.com/maps/api/js?key=xxx&callback=initMap"
    type="text/javascript" ></script>
    <script>
    </script>
